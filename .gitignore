@@ -1,0 +1,12 @@
+sphinx_git_changelog.egg-info/
+dist/
+*.pyc
+sample/_build
+docs/_build
+.travis-solo
+.ropeproject
+*.swp
+.tox
+build
+/.pytest_cache/
+/docs/_build/
