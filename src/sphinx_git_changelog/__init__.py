@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright 2018-2019 (C) Aleksey Marin <asmadews@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
