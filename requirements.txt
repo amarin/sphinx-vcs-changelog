@@ -1,2 +1,4 @@
+six
+sphinx
 gitpython
 docutils
