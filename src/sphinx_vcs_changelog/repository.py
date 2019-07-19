@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
 """Base"""
+from abc import abstractmethod
 from itertools import filterfalse
 
 import six
 from docutils.parsers.rst import Directive
+from docutils.parsers.rst import directives
 from git import Repo
 
+from sphinx_vcs_changelog.constants import OPTION_MATCH
+from sphinx_vcs_changelog.constants import OPTION_MAX_RESULTS_COUNT
 from sphinx_vcs_changelog.constants import OPTION_REPO_DIR
+from sphinx_vcs_changelog.constants import OPTION_SINCE
 from sphinx_vcs_changelog.decorator import use_option
 from sphinx_vcs_changelog.filters import CommitsFilter
 from sphinx_vcs_changelog.filters import NOTSET
+from sphinx_vcs_changelog.filters.added_since import AddedSince
+from sphinx_vcs_changelog.filters.matched_regexp import MatchedRegexp
+from sphinx_vcs_changelog.filters.results_count import ResultsCount
 
 
 @use_option(OPTION_REPO_DIR, six.text_type)
+@use_option(OPTION_SINCE, directives.nonnegative_int)
+@use_option(OPTION_MATCH, six.text_type)
+@use_option(OPTION_MAX_RESULTS_COUNT, directives.nonnegative_int)
 class Repository(Directive):
     """Base class for changelog directive
 
@@ -20,7 +31,11 @@ class Repository(Directive):
     commits filtering and options definitions
     """
 
-    filters = []
+    filters = [
+        AddedSince,
+        MatchedRegexp,
+        ResultsCount,
+    ]
 
     def __init__(self, *args, **kwargs):
         super(Repository, self).__init__(*args, **kwargs)
@@ -119,3 +134,12 @@ class Repository(Directive):
     def get_filter_ordering(self):
         """Return filter functions apply ordering"""
         return self.filters
+
+    def run(self):
+        """Choose commits to display & build markup """
+        return self.build_markup()
+
+    @abstractmethod
+    def build_markup(self):
+        """Build markup"""
+        raise NotImplementedError("%s.build_markup() to be implemented")
