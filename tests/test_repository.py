@@ -16,18 +16,20 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import re
 from os import path
-
-from sphinx_vcs_changelog.factory import directive_factory
 
 
 def test_no_repository_raises(temp_dir):
     from sphinx_vcs_changelog.exceptions import RepositoryNotFound
+    from sphinx_vcs_changelog.factory import directive_factory
+
     expect_exception_class = RepositoryNotFound
     not_a_vcs_path = path.join(temp_dir, 'test.rst')
+
     try:
         directive = directive_factory(not_a_vcs_path)
-        res = directive.run()
+        directive.run()
     except expect_exception_class:
         pass
     else:
@@ -36,13 +38,92 @@ def test_no_repository_raises(temp_dir):
 
 def test_no_path_raises(temp_dir):
     from sphinx_vcs_changelog.exceptions import InvalidPath
+    from sphinx_vcs_changelog.factory import directive_factory
+
     expect_exception_class = InvalidPath
     not_a_vcs_path = path.join(temp_dir, 'test_rst', 'example.rst')
     try:
         directive = directive_factory(not_a_vcs_path)
-        res = directive.run()
+        directive.run()
     except expect_exception_class:
         pass
     else:
         raise NotImplementedError("Expects %s" % expect_exception_class)
 
+
+def test_100_filter_matched(test_object_of_class):
+    instance = test_object_of_class
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+    from sphinx_vcs_changelog.constants import OPTION_MATCH
+
+    assert isinstance(instance, ChangelogWriter)
+
+    message_to_match = 'ref: commit #1'
+    message_regex = '^[a-z]{3}:.+#\\d+$'
+    assert re.match(message_regex, message_to_match) is not None
+
+    instance.repo.index.commit('initial')
+    instance.repo.index.commit('next initial')
+    instance.repo.index.commit(message_to_match)
+    instance.repo.index.commit('another one matched')
+
+    assert instance.commits_count == 4
+
+    instance.options.update({
+        OPTION_MATCH: message_regex
+    })
+
+    assert instance.commits_count == 1
+    assert {x.message for x in instance.commits_list} == {message_to_match}
+
+
+def test_100_filter_since(test_object_of_class):
+    instance = test_object_of_class
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+    from sphinx_vcs_changelog.constants import OPTION_SINCE
+
+    assert isinstance(instance, ChangelogWriter)
+
+    instance.repo.index.commit('initial')
+    total_commits = 1
+
+    message_template = 'ref: commit #%d'
+    look_for_commit_number = 4
+    look_for_commit_message = message_template % look_for_commit_number
+    look_for_hexsha = None
+
+    commits_after_requested = []
+
+    assert instance.commits_count == total_commits
+
+    for _num in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+        msg = message_template % _num
+        commit = instance.repo.index.commit(msg)
+        total_commits += 1
+
+        if look_for_hexsha is not None:
+            commits_after_requested.append(msg)
+
+        if msg == look_for_commit_message:
+            look_for_hexsha = commit.hexsha
+
+    assert instance.commits_count == total_commits
+
+    instance.options.update({
+        OPTION_SINCE: look_for_commit_message
+    })
+
+    assert instance.commits_count == len(commits_after_requested)
+    assert set(
+        [x.message for x in instance.commits_list]
+    ) == set(commits_after_requested)
+
+    del instance.options[OPTION_SINCE]
+    assert instance.commits_count == 10
+    instance.options.update({
+        OPTION_SINCE: look_for_hexsha
+    })
+    assert instance.commits_count == len(commits_after_requested)
+    assert set(
+        [x.message for x in instance.commits_list]
+    ) == set(commits_after_requested)
