@@ -2,17 +2,21 @@
 """Base"""
 from abc import abstractmethod
 from itertools import filterfalse
+from os import path
 
 import six
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst import directives
+from git import InvalidGitRepositoryError
+from git import NoSuchPathError
 from git import Repo
 
 from sphinx_vcs_changelog.constants import OPTION_MATCH
 from sphinx_vcs_changelog.constants import OPTION_MAX_RESULTS_COUNT
 from sphinx_vcs_changelog.constants import OPTION_REPO_DIR
 from sphinx_vcs_changelog.constants import OPTION_SINCE
-from sphinx_vcs_changelog.decorator import use_option
+from sphinx_vcs_changelog.exceptions import InvalidPath
+from sphinx_vcs_changelog.exceptions import RepositoryNotFound
 from sphinx_vcs_changelog.filters import CommitsFilter
 from sphinx_vcs_changelog.filters import NOTSET
 from sphinx_vcs_changelog.filters.added_since import AddedSince
@@ -69,7 +73,18 @@ class Repository(Directive):
             OPTION_REPO_DIR,
             self.state.document.settings.env.srcdir
         )
-        repo = Repo(repo_dir, search_parent_directories=True)
+        if not path.exists(repo_dir):
+            raise InvalidPath("No such path %s" % repo_dir)
+
+        try:
+            repo = Repo(repo_dir, search_parent_directories=True)
+
+        except InvalidGitRepositoryError:
+            raise RepositoryNotFound("No repository at %s", repo_dir)
+
+        except NoSuchPathError:
+            raise InvalidPath("No such path %s" % repo_dir)
+
         return repo
 
     @property
