@@ -1,0 +1,22 @@
+Recent Changes
+**************
+
+Список измений (группы):
+
+* dev: Added simple linear writer (*Marin Aleksey*)
+
+* fun: Added simple commit message formatter (*Marin Aleksey*)
+
+* fun: Added base classes to repository access and commit’s
+  filtering (*Marin Aleksey*)
+
+* dev: Added editorconfig settings file .editorconfig (*Marin
+  Aleksey*)
+
+* ref: Extended description of use_option decorator (*Marin
+  Aleksey*)
+
+* doc: Added commit policy introduction (*Marin Aleksey*)
+
+* fun: added simple decorator to describe options for docutils
+  directive extension classes (*Marin Aleksey*)
