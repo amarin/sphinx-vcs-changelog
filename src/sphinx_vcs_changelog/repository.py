@@ -11,7 +11,9 @@ from git import InvalidGitRepositoryError
 from git import NoSuchPathError
 from git import Repo
 
+from sphinx_vcs_changelog.constants import OPTION_ITEM_TEMPLATE
 from sphinx_vcs_changelog.constants import OPTION_MATCH
+from sphinx_vcs_changelog.constants import OPTION_MATCH_GROUPS
 from sphinx_vcs_changelog.constants import OPTION_MAX_RESULTS_COUNT
 from sphinx_vcs_changelog.constants import OPTION_REPO_DIR
 from sphinx_vcs_changelog.constants import OPTION_SINCE
@@ -20,14 +22,11 @@ from sphinx_vcs_changelog.exceptions import RepositoryNotFound
 from sphinx_vcs_changelog.filters import CommitsFilter
 from sphinx_vcs_changelog.filters import NOTSET
 from sphinx_vcs_changelog.filters.added_since import AddedSince
+from sphinx_vcs_changelog.filters.match_groups import MatchGroups
 from sphinx_vcs_changelog.filters.matched_regexp import MatchedRegexp
 from sphinx_vcs_changelog.filters.results_count import ResultsCount
 
 
-@use_option(OPTION_REPO_DIR, six.text_type)
-@use_option(OPTION_SINCE, directives.nonnegative_int)
-@use_option(OPTION_MATCH, six.text_type)
-@use_option(OPTION_MAX_RESULTS_COUNT, directives.nonnegative_int)
 class Repository(Directive):
     """Base class for changelog directive
 
@@ -38,8 +37,21 @@ class Repository(Directive):
     filters = [
         AddedSince,
         MatchedRegexp,
-        ResultsCount,
+        ResultsCount
     ]
+    context_processors = [
+        MatchGroups
+    ]
+    has_content = True
+
+    option_spec = {
+        OPTION_REPO_DIR: six.text_type,
+        OPTION_SINCE: directives.nonnegative_int,
+        OPTION_MATCH: six.text_type,
+        OPTION_MAX_RESULTS_COUNT: directives.nonnegative_int,
+        OPTION_MATCH_GROUPS: six.text_type,
+        OPTION_ITEM_TEMPLATE: six.text_type
+    }
 
     def __init__(self, *args, **kwargs):
         super(Repository, self).__init__(*args, **kwargs)
@@ -48,8 +60,8 @@ class Repository(Directive):
         self.warning = None
         self.error = None
         self.critical = None
-
         self._filtered = None
+
         self.prepare()
 
     def prepare(self):
@@ -58,11 +70,16 @@ class Repository(Directive):
         as well as directly in tests.
 
         Dont inline into __init__ because of testing behaviour"""
-        self.debug = self.state.document.reporter.debug
-        self.info = self.state.document.reporter.info
-        self.warning = self.state.document.reporter.warning
-        self.error = self.state.document.reporter.error
-        self.critical = self.state.document.reporter.severe
+        from sphinx.util import logging
+        logger = logging.getLogger(__name__)
+
+        self.debug = logger.debug
+        self.info = logger.info
+        self.warning = logger.warning
+        self.error = logger.debug
+        self.critical = logger.error
+
+        self._filtered = None
 
     def using_repo(self):
         """Find target repository and return Repo object.
