@@ -8,7 +8,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name='sphinx_git_changelog',
+    name='sphinx_vcs_changelog',
     description='Project Git Changelog for Sphinx',
     version='0.0.1',
     author='Aleksey Marin',
@@ -23,7 +23,7 @@ setup(
     data_files=[],
     entry_points={
         "console_scripts": [
-            "dj_generate=sphinx_dj_generator.cmdline:generate",
+            "vcs_changelog=sphinx_vcs_changelog.cmdline:main",
         ]
     },
     tests_require=["pytest"],
