@@ -44,3 +44,31 @@ class RepositoryNotFound(Exception):
 class InvalidPath(Exception):
     """No such path"""
     pass
+
+
+class NoCommits(Exception):
+    """No commits in vcs"""
+    pass
+
+
+class UnexpectedParameterValue(Exception):
+    """Parameter value unexpected"""
+
+    def __init__(self, param_name, value, msg, **kwargs):
+        self.param_name = param_name
+        self.value = value
+        if kwargs:
+            msg %= kwargs
+        self.message = msg
+        super(UnexpectedParameterValue, self).__init__()
+
+    def __str__(self):
+        return ""\
+            "%(base_description)s: " \
+            "Parameter %(param_name)s=%(value)s unexpected. " \
+            "%(msg)s" % dict(
+                base_description=self.__class__.__doc__,
+                param_name=self.param_name,
+                value=self.vsalue,
+                msg=self.message
+            )
