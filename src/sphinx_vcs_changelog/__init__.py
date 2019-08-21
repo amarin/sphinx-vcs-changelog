@@ -20,3 +20,8 @@ __version__ = '0.0.1'
 
 def setup(app):
     """Add plugin directives into application registered directives list"""
+
+    from sphinx_vcs_changelog.constants import DIRECTIVE_CHANGELOG
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+
+    app.add_directive(DIRECTIVE_CHANGELOG, ChangelogWriter)
