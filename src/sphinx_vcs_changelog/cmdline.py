@@ -43,7 +43,8 @@ def main():
     instance = directive_factory(virtual_source)
     instance.prepare()
 
-    instance.options.update(get_options_from_config('setup.cfg'))
+    config = get_options_from_config('setup.cfg')
+    instance.options.update(config)
 
     assert isinstance(instance, ChangelogWriter)
 
