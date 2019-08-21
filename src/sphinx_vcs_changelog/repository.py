@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """Base"""
 from abc import abstractmethod
+from future import standard_library
+from sphinx_vcs_changelog.constants import OPTION_FORMAT
+from sphinx_vcs_changelog.constants import OPTION_TABLE_CAPTION
+from sphinx_vcs_changelog.constants import OPTION_TABLE_HEADER
+
+standard_library.install_aliases()
 from itertools import filterfalse
 from os import path
 
@@ -18,6 +24,7 @@ from sphinx_vcs_changelog.constants import OPTION_MAX_RESULTS_COUNT
 from sphinx_vcs_changelog.constants import OPTION_REPO_DIR
 from sphinx_vcs_changelog.constants import OPTION_SINCE
 from sphinx_vcs_changelog.exceptions import InvalidPath
+from sphinx_vcs_changelog.exceptions import NoCommits
 from sphinx_vcs_changelog.exceptions import RepositoryNotFound
 from sphinx_vcs_changelog.filters import CommitsFilter
 from sphinx_vcs_changelog.filters import NOTSET
@@ -46,11 +53,14 @@ class Repository(Directive):
 
     option_spec = {
         OPTION_REPO_DIR: six.text_type,
-        OPTION_SINCE: directives.nonnegative_int,
+        OPTION_SINCE: six.text_type,
         OPTION_MATCH: six.text_type,
         OPTION_MAX_RESULTS_COUNT: directives.nonnegative_int,
         OPTION_MATCH_GROUPS: six.text_type,
-        OPTION_ITEM_TEMPLATE: six.text_type
+        OPTION_ITEM_TEMPLATE: six.text_type,
+        OPTION_FORMAT: six.text_type,
+        OPTION_TABLE_HEADER: six.text_type,
+        OPTION_TABLE_CAPTION: six.text_type
     }
 
     def __init__(self, *args, **kwargs):
@@ -125,7 +135,10 @@ class Repository(Directive):
 
         Filtering commits using current filter set"""
         if self._filtered is None:
-            self._filtered = self.using_repo().iter_commits()
+            try:
+                self._filtered = self.using_repo().iter_commits()
+            except ValueError:
+                raise NoCommits()
 
         for filter_instance_or_class in self.get_filter_ordering():
             self._apply_filter(filter_instance_or_class)
