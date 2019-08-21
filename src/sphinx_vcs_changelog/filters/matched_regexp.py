@@ -16,10 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-
-import re
-
 from sphinx_vcs_changelog.constants import OPTION_MATCH
 from sphinx_vcs_changelog.filters import OptionFilter
 
@@ -27,14 +23,7 @@ from sphinx_vcs_changelog.filters import OptionFilter
 class MatchedRegexp(OptionFilter):
     """Match commit messages with regular expression"""
     option = OPTION_MATCH
-
-    @property
-    def regexp(self):
-        """Lazy compiled regular expression"""
-        store_in = '__regexp'
-        if not hasattr(self, store_in):
-            setattr(self, store_in, re.compile(self.value))
-        return getattr(self, store_in)
+    is_regexp = True
 
     def pass_to_render(self, commit):
         """Pass commit to render only if message matched regexp"""
