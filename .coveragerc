@@ -1,0 +1,21 @@
+[run]
+omit =
+   *tests/*,
+   venv/*,
+   build/*,
+   static/*,
+   .*
+
+# https://coverage.readthedocs.io/en/latest/plugins.html#plugins
+# https://github.com/nedbat/django_coverage_plugin/tree/master/tests
+
+[paths]
+source =
+    src/
+
+[report]
+skip_covered = True
+
+[html]
+directory = build/cov
+title = Отчёт о покрытии кода тестами
