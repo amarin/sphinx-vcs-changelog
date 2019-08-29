@@ -10,7 +10,7 @@ from setuptools import setup
 setup(
     name='sphinx_vcs_changelog',
     description='Project Git Changelog for Sphinx',
-    version='0.0.1',
+    version='0.1.0',
     author='Aleksey Marin',
     author_email='asmadews@gmail.com',
     packages=find_packages('src'),
