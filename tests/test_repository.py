@@ -19,6 +19,8 @@
 import re
 from os import path
 
+from docutils import nodes
+
 
 def test_no_repository_raises(temp_dir):
     from sphinx_vcs_changelog.exceptions import RepositoryNotFound
@@ -49,6 +51,25 @@ def test_no_path_raises(temp_dir):
         pass
     else:
         raise NotImplementedError("Expects %s" % expect_exception_class)
+
+
+def test_no_commits(test_object_of_class):
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+    from sphinx_vcs_changelog.exceptions import NoCommits
+
+    assert isinstance(test_object_of_class, ChangelogWriter)
+    expecting_exception_classes = (NoCommits, )
+
+    try:
+        test_object_of_class.run()
+    except expecting_exception_classes:
+        pass
+    else:
+        raise AssertionError(
+            "Expected any of %s", ', '.join(
+                (x.__name__ for x in expecting_exception_classes)
+            )
+        )
 
 
 def test_100_filter_matched(test_object_of_class):
@@ -127,3 +148,21 @@ def test_100_filter_since(test_object_of_class):
     assert set(
         [x.message for x in instance.commits_list]
     ) == set(commits_after_requested)
+
+
+def test_first_commit_produces_one_item(test_object_of_class):
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+    assert isinstance(test_object_of_class, ChangelogWriter)
+    test_object_of_class.repo.index.commit('initial')
+    res = test_object_of_class.run()
+    assert 1 == len(res)
+    assert isinstance(res[0], nodes.bullet_list)
+
+def test_commit_template_parts(test_object_of_class):
+    from sphinx_vcs_changelog.changelog import ChangelogWriter
+    assert isinstance(test_object_of_class, ChangelogWriter)
+    test_object_of_class.repo.index.commit('initial')
+    res = test_object_of_class.run()
+    assert 1 == len(res)
+    assert isinstance(res[0], nodes.bullet_list)
+

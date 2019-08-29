@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from os import path
 
-from docutils.frontend import Values
-
 from sphinx_vcs_changelog.factory import directive_factory
+from tests.constants import TESTUSER
 
 __docformat__ = 'reStructuredText'
 
@@ -26,10 +25,9 @@ def repo(temp_dir):
     """Make test repo in temporary path"""
     assert path.exists(temp_dir)
     from git import Repo
-    username = 'testuser'
     _repo = Repo.init(temp_dir, mkdir=True)
     config_writer = _repo.config_writer()
-    config_writer.set_value('user', 'name', username)
+    config_writer.set_value('user', 'name', TESTUSER)
     config_writer.release()
     return _repo
 
