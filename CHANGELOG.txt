@@ -3,20 +3,25 @@ Recent Changes
 
 Список измений (группы):
 
-* dev: Added simple linear writer (*Marin Aleksey*)
+* dev: gitignore .idea && *.egg-info (*Marin Aleksey*)
 
-* fun: Added simple commit message formatter (*Marin Aleksey*)
+* dev: gitignore venv (*Marin Aleksey*)
 
-* fun: Added base classes to repository access and commit’s
-  filtering (*Marin Aleksey*)
+* dev: future tox settings (*Marin Aleksey*)
 
-* dev: Added editorconfig settings file .editorconfig (*Marin
+* dev: some testing code (*Marin Aleksey*)
+
+* dev: some testing code (*Marin Aleksey*)
+
+* dev: Some developer addons like bympversion config etc (*Marin
   Aleksey*)
 
-* ref: Extended description of use_option decorator (*Marin
+* dev: Added changelog_by_file prototype (not ready yet) (*Marin
   Aleksey*)
 
-* doc: Added commit policy introduction (*Marin Aleksey*)
+* dev: Added beta documentation (*Marin Aleksey*)
 
-* fun: added simple decorator to describe options for docutils
-  directive extension classes (*Marin Aleksey*)
+* fun: Added format option to output either as list or as csv-table
+  (*Marin Aleksey*)
+
+* dev: Additional options and default values (*Marin Aleksey*)
