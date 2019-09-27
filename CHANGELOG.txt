@@ -1,7 +1,11 @@
 Recent Changes
 **************
 
-Список измений (группы):
+Changes (groups):
+
+* doc: Some docs refactoring (*Marin Aleksey*)
+
+* dev: required Python>=3.6 (*Marin Aleksey*)
 
 * dev: gitignore .idea && *.egg-info (*Marin Aleksey*)
 
@@ -20,8 +24,3 @@ Recent Changes
   Aleksey*)
 
 * dev: Added beta documentation (*Marin Aleksey*)
-
-* fun: Added format option to output either as list or as csv-table
-  (*Marin Aleksey*)
-
-* dev: Additional options and default values (*Marin Aleksey*)
