@@ -90,3 +90,12 @@ prepare_tests:
 
 test:
 	python3.6 -m pytest .
+
+dist:
+	python3 setup.py sdist bdist_wheel
+
+test_publish:
+	python3 -m twine upload --config-file ~/.pypirc --repository-url https://test.pypi.org/legacy/ dist/*
+
+publish:
+	python3 -m twine upload --config-file ~/.pypirc dist/*

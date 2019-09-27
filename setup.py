@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """Project setup configuration for setuptools"""
 
 from glob import glob
@@ -49,12 +48,16 @@ setup(
         'Natural Language :: Russian',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Documentation :: Sphinx',
         'Topic :: Software Development :: Documentation',
         'Topic :: Software Development :: Libraries :: Python Modules'
-    ]
+    ],
+    long_description_content_type='text/x-rst',
+    long_description="""
+    sphinx-vcs-changelog is an extension to the Sphinx documentation tool
+    supporting git history excerpt includes into your documentation.
+    Useful in cases of preparing release changelog or describe specific changes
+    in documentation.
+    """
 )
