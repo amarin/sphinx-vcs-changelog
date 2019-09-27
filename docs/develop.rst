@@ -1,7 +1,8 @@
 Developing
 ===============================================================================
 
-As we developing changelog parser for git we use some statements in commit flow:
+As we developing changelog parser for git we follow some rules
+for commit messages:
 
 - Each commit SHOULD prefixed with commit functional group identification
 - Functional groups are:
@@ -11,4 +12,3 @@ As we developing changelog parser for git we use some statements in commit flow:
    - fix: Fixing changes fixing error cases or possible errors
    - doc: Documentation only
    - Merge: git default merge requests
-   - version: Release commit, marked with tag too

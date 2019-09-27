@@ -4,7 +4,7 @@ Sphinx-VCS-Changelog
 ===============================================================================
 
 sphinx-vcs-changelog is an extension to the `Sphinx documentation tool`_
-supporting git history excerpts includes into your documentation.
+supporting git history excerpt includes into your documentation.
 Useful in cases for release changelogs or describe specific changes
 in documentation.
 

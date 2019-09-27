@@ -9,6 +9,6 @@ Recent Changes
    :context-regex-groups: ^(?З<group>[a-z]{3}):.+$
    :item-template: {summary} (*{author}*)
 
-   Список измений (группы):
+   Changes (groups):
 
    {commits}
